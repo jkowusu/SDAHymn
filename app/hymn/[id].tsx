@@ -16,8 +16,10 @@ import { useDatabase } from '@/hooks/useDatabase';
 import { useFavorites } from '@/hooks/useFavorites';
 import { Hymn } from '@/types/hymn';
 
+
 export default function HymnDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
+
   const [hymn, setHymn] = useState<Hymn | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,11 +27,12 @@ export default function HymnDetail() {
   const { getHymnById } = useDatabase();
   const { toggleFavorite, isFavorite } = useFavorites();
 
+
   useEffect(() => {
     if (id) {
       loadHymn(parseInt(id));
     }
-  }, [id]);
+  }, [id])
 
   const loadHymn = async (hymnId: number) => {
     setIsLoading(true);
@@ -40,6 +43,7 @@ export default function HymnDetail() {
       if (hymnData) {
         setHymn(hymnData);
       } else {
+        console.log("Not found for some reason")
         setError('Hymn not found');
       }
     } catch (err) {

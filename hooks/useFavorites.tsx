@@ -1,9 +1,24 @@
-import { useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FAVORITES_KEY = 'sda_hymnal_favorites';
 
-export function useFavorites() {
+interface FavoritesContextProps {
+  favorites: number[];
+  isLoading: boolean;
+  toggleFavorite: (hymnId: number) => Promise<void>;
+  isFavorite: (hymnId: number) => boolean;
+}
+
+const FavoritesContext = createContext<FavoritesContextProps | undefined>(undefined);
+
+export const FavoritesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [favorites, setFavorites] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -37,16 +52,23 @@ export function useFavorites() {
     const newFavorites = favorites.includes(hymnId)
       ? favorites.filter(id => id !== hymnId)
       : [...favorites, hymnId];
-    
+
     await saveFavorites(newFavorites);
   };
 
   const isFavorite = (hymnId: number) => favorites.includes(hymnId);
 
-  return {
-    favorites,
-    isLoading,
-    toggleFavorite,
-    isFavorite
-  };
-}
+  return (
+    <FavoritesContext.Provider value={{ favorites, isLoading, toggleFavorite, isFavorite }}>
+      {children}
+    </FavoritesContext.Provider>
+  );
+};
+
+export const useFavorites = (): FavoritesContextProps => {
+  const context = useContext(FavoritesContext);
+  if (!context) {
+    throw new Error('useFavorites must be used within a FavoritesProvider');
+  }
+  return context;
+};

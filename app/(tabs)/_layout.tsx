@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Chrome as Home, List, Heart } from 'lucide-react-native';
+import { House, List, Heart } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -14,7 +14,7 @@ export default function TabLayout() {
           borderTopColor: '#e5e7eb',
           paddingTop: 8,
           paddingBottom: 8,
-          height: 60,
+          height: 80,
         },
         tabBarLabelStyle: {
           fontSize: 12,
@@ -27,7 +27,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ size, color }) => (
-            <Home size={size} color={color} />
+            <House size={size} color={color} />
           ),
         }}
       />

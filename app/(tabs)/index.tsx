@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, SafeAreaView } from 'react-native';
-import { router } from 'expo-router';
-import { SearchBar } from '@/components/SearchBar';
 import { HymnCard } from '@/components/HymnCard';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { SearchBar } from '@/components/SearchBar';
 import { useDatabase } from '@/hooks/useDatabase';
 import { useFavorites } from '@/hooks/useFavorites';
 import { HymnSearchResult } from '@/types/hymn';
+import { router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 export default function HomeTab() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,6 +39,7 @@ export default function HomeTab() {
   };
 
   const handleHymnPress = (hymnId: number) => {
+    console.log("Redirect")
     router.push(`/hymn/${hymnId}`);
   };
 
@@ -66,16 +67,20 @@ export default function HomeTab() {
         <Text style={styles.title}>SDA Hymnal</Text>
         <Text style={styles.subtitle}>Search by hymn number or title</Text>
       </View>
-      
       <SearchBar
         value={searchQuery}
         onChangeText={setSearchQuery}
         placeholder="Enter hymn number or search title..."
       />
-
-      {isSearching ? (
+      {!searchQuery.trim() ? (
+        <View style={styles.welcomeContainer}>
+          <Text style={styles.welcomeText}>
+            Search for by number, title, or lyrics above, or browse all hymns in the Hymns tab.
+          </Text>
+        </View>
+      ) : isSearching ? (
         <LoadingSpinner message="Searching..." />
-      ) : searchQuery.trim() && searchResults.length === 0 ? (
+      ) : searchResults.length === 0 ? (
         <View style={styles.noResults}>
           <Text style={styles.noResultsText}>No hymns found</Text>
           <Text style={styles.noResultsSubtext}>
@@ -98,15 +103,6 @@ export default function HomeTab() {
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
         />
-      )}
-
-      {!searchQuery.trim() && (
-        <View style={styles.welcomeContainer}>
-          <Text style={styles.welcomeTitle}>Welcome to SDA Hymnal</Text>
-          <Text style={styles.welcomeText}>
-            Search for hymns by number or title above, or browse all hymns in the Hymns tab.
-          </Text>
-        </View>
       )}
     </SafeAreaView>
   );
@@ -161,7 +157,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 40,
+    paddingHorizontal: 30,
   },
   welcomeTitle: {
     fontSize: 24,
